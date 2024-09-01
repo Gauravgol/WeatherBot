@@ -1,10 +1,4 @@
-/admin-panel-Backend/env
-/admin-panel-frontend/env
-/weather-bit/env
-
-/admin-panel-Backend/node_modules
-/admin-panel-frontend/node_modules
-/weather-bit/node_modules
+ 
 
 node_modules/
 .env/
