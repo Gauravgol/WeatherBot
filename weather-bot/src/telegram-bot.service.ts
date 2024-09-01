@@ -142,7 +142,7 @@ export class TelegramBotService implements OnModuleInit {
   //   }
   // }
 
-  @Cron('*/1 * * * *')
+  @Cron('*/5 * * * *')
   async sendDailyWeatherUpdates() {
     try {
       const response = await axios.get(
