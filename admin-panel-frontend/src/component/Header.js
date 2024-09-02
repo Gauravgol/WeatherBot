@@ -26,11 +26,11 @@ const Header = () => {
 
 const navigate=useNavigate()
 
-// const logout = () => {
+const outlog = () => {
   
-//   localStorage.removeItem('accessToken');
-//   navigate('/');
-// };
+  // localStorage.removeItem('accessToken');
+  navigate('/');
+};
  
 
 
@@ -68,7 +68,8 @@ const navigate=useNavigate()
         {/* <ListGroup.Item as="li">
         <a href="#" data-bs-dismiss="offcanvas" onClick={()=>{navigate("/help")} }><MdOutlineHelp /> Help & Support</a></ListGroup.Item> */}
         <ListGroup.Item as="li">
-        <a href="#" data-bs-dismiss="offcanvas" onClick={logout}>< IoLogOut /> Logout</a></ListGroup.Item>
+         
+      {isAuthenticated? <a href="#" data-bs-dismiss="offcanvas" onClick={logout}>< IoLogOut /> Logout</a>: <a href="#" data-bs-dismiss="offcanvas" onClick={outlog}>< IoLogOut /> Logout</a> } </ListGroup.Item>
         
     </ListGroup>
   </div>

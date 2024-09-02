@@ -18,6 +18,7 @@ const schedule_1 = require("@nestjs/schedule");
 const nestjs_telegraf_1 = require("nestjs-telegraf");
 const telegraf_1 = require("telegraf");
 const axios_1 = require("axios");
+const https = require("https");
 let TelegramBotService = class TelegramBotService {
     constructor(bot) {
         this.bot = bot;
@@ -42,8 +43,13 @@ let TelegramBotService = class TelegramBotService {
             ctx.reply(message);
         });
         this.bot.hears('/subscribe', async (ctx) => {
+            const agent = new https.Agent({
+                rejectUnauthorized: false
+            });
             const response = await axios_1.default.post(`${process.env.LocalApi}/api/subscribe`, {
                 userId: ctx.chat.id,
+            }, {
+                httpsAgent: agent
             });
             ctx.reply(`${response.data.message}`);
         });
@@ -121,13 +127,16 @@ let TelegramBotService = class TelegramBotService {
     }
     async sendDailyWeatherUpdates() {
         try {
-            const response = await axios_1.default.get(`${process.env.LocalApi}/api/get-subscribers`);
+            const agent = new https.Agent({
+                rejectUnauthorized: false
+            });
+            const response = await axios_1.default.get(`${process.env.LocalApi}/api/get-subscribers`, { httpsAgent: agent });
             if (response.data.status === true && response.data.data.length > 0) {
                 const weatherData = await this.getWeatherData();
                 console.log('subsribes', response.data.data);
                 if (response.data.data.length > 0) {
                     for (const data of response.data.data) {
-                        this.bot.telegram.sendMessage(data.userid, `Hello this hour weather Report: ${weatherData}`);
+                        this.bot.telegram.sendMessage(data.userid, `Weather Report: ${weatherData}`);
                     }
                 }
             }
@@ -157,7 +166,7 @@ let TelegramBotService = class TelegramBotService {
 };
 exports.TelegramBotService = TelegramBotService;
 __decorate([
-    (0, schedule_1.Cron)('*/1 * * * *'),
+    (0, schedule_1.Cron)('*/5 * * * *'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

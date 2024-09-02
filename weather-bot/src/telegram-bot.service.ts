@@ -4,6 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import axios from 'axios';
+import * as https from 'https';
 
 @Injectable()
 export class TelegramBotService implements OnModuleInit {
@@ -33,16 +34,24 @@ export class TelegramBotService implements OnModuleInit {
 
     // Handle subscribe command
     this.bot.hears('/subscribe', async (ctx) => {
+      const agent = new https.Agent({  
+        rejectUnauthorized: false
+      });
       const response = await axios.post(
         `${process.env.LocalApi}/api/subscribe`,
         {
           userId: ctx.chat.id,
-        },
+        },{
+           httpsAgent: agent 
+        }
       );
       ctx.reply(`${response.data.message}`);
     });
 
     this.bot.hears('/unsubscribe', async (ctx) => {
+      const agent = new https.Agent({  
+        rejectUnauthorized: false
+      });
       const response = await axios.post(
         `${process.env.LocalApi}/api/unsubscribe`,
         {
@@ -145,8 +154,12 @@ export class TelegramBotService implements OnModuleInit {
   @Cron('*/5 * * * *')
   async sendDailyWeatherUpdates() {
     try {
+      const agent = new https.Agent({  
+        rejectUnauthorized: false
+      });
+      
       const response = await axios.get(
-        `${process.env.LocalApi}/api/get-subscribers`,
+        `${process.env.LocalApi}/api/get-subscribers`,{ httpsAgent: agent }
       );
       if (response.data.status === true && response.data.data.length > 0) {
         const weatherData = await this.getWeatherData();

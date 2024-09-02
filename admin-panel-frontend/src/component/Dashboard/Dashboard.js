@@ -32,7 +32,9 @@ const Dashboard = () => {
             setLoaded(false)
             console.log(response.data.data, "dataSession")
         } catch (error) {
-            alert("Internal server Error, Unable get session details");
+            setSessionData([]);
+            setLoaded(false)
+            alert("Internal server Error, Unable get data");
         }
     };
 
